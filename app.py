@@ -7,83 +7,87 @@ import joblib
 model = tf.keras.models.load_model('student_prediction_model.h5')
 scaler = joblib.load('scaler.pkl')
 
-# Mapping dictionaries
+# Grade and result mappings
 waec_mapping = {'A1': 6, 'B2': 5, 'B3': 4, 'C4': 3, 'C5': 2, 'C6': 1, 'D7': 0, 'F9': 0}
 result_mapping = {
     0: '🎓 First Class',
-    1: '🏅 Second Upper',
-    2: '📘 Second Lower',
-    3: '📙 Third Class',
-    4: '❗ Pass/Withdrawn'
+    1: '🥈 Second Class Upper',
+    2: '🥉 Second Class Lower',
+    3: '🎗️ Third Class',
+    4: '⚠️ Pass/Withdrawn'
 }
 
-# Custom CSS
+# Page Configuration
+st.set_page_config(page_title="Student Result Predictor", page_icon="🎓", layout="centered")
+
+# Custom CSS Styling
 st.markdown("""
     <style>
-        .main {
-            background-color: #f7fdfc;
-        }
-        h1 {
-            color: #004d00;
-            font-size: 36px;
-            font-weight: bold;
-        }
-        .stButton>button {
-            background-color: #198754;
-            color: white;
-            border-radius: 10px;
-            font-weight: bold;
-            padding: 0.5em 1.5em;
-            margin-top: 1em;
-        }
-        .stTextInput>div>div>input {
-            border-radius: 5px;
-        }
-        .footer {
-            text-align: center;
-            font-size: small;
-            color: grey;
-            margin-top: 2em;
-        }
+    .main {
+        background-color: #f4f9f4;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+    }
+    .stButton>button {
+        background-color: #28a745;
+        color: white;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+    .stButton>button:hover {
+        background-color: #218838;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Sidebar
-st.sidebar.title("🧠 About This App")
-st.sidebar.info(
-    "This app predicts a student's **likely final university result** based on WAEC grades "
-    "and first semester GPA.\n\nDeveloped by **Kilani Sikiru O. (PT/22/0061)**"
-)
-
-# Main Title
+# App Title
 st.title("🎓 Student Final Result Prediction")
-st.markdown("### Developed by Kilani Sikiru O. – PT/22/0061")
+st.markdown("##### Developed by **Kilani Sikiru O.**  &nbsp;&nbsp;&nbsp; 🎓 Matric: **PT/22/0061**")
+st.write("---")
+
+# Sidebar Information
+with st.sidebar:
+    st.header("📘 About App")
+    st.info("""
+        This app uses a machine learning model to predict a student's **final academic result**
+        based on their WAEC grades and first semester GPA.
+        
+        Inputs:
+        - WAEC Grades for 6 subjects
+        - First Semester GPA
+        
+        Output:
+        - Predicted Final Degree Class
+    """)
 
 # Input Section
-st.subheader("📥 Enter Your WAEC Grades")
+st.subheader("📥 Input WAEC Grades and GPA")
 grades = {}
 subjects = ["English", "Maths", "Physics", "Chemistry", "Biology", "Economics"]
 
 col1, col2 = st.columns(2)
-for i, subj in enumerate(subjects):
-    with col1 if i % 2 == 0 else col2:
-        grades[subj] = st.selectbox(f"{subj} Grade", list(waec_mapping.keys()))
+for idx, subj in enumerate(subjects):
+    with col1 if idx % 2 == 0 else col2:
+        grades[subj] = st.selectbox(f"{subj} Grade", options=list(waec_mapping.keys()), key=subj)
 
-st.subheader("📊 Enter First Semester GPA")
-gpa = st.number_input("GPA (0.0 - 5.0)", min_value=0.0, max_value=5.0, step=0.1)
+gpa = st.slider("🎯 First Semester GPA", 0.0, 5.0, step=0.1)
 
-# Prediction
-if st.button("🔮 Predict Final Result"):
-    with st.spinner("Analyzing your data..."):
-        input_data = [waec_mapping[grades[subj]] for subj in subjects]
-        input_data.append(gpa)
-        input_array = np.array([input_data])
-        input_scaled = scaler.transform(input_array)
-        prediction = model.predict(input_scaled)
-        predicted_class = np.argmax(prediction, axis=1)[0]
-        result = result_mapping[predicted_class]
-
-    st.success(f"✅ **Predicted Final Result:** {result}")
+# Predict Button
+if st.button("🔍 Predict Final Result"):
+    input_data = [waec_mapping[grades[subj]] for subj in subjects]
+    input_data.append(gpa)
+    input_array = np.array([input_data])
+    input_scaled = scaler.transform(input_array)
+    prediction = model.predict(input_scaled)
+    predicted_class = np.argmax(prediction, axis=1)[0]
+    result = result_mapping[predicted_class]
+    
+    st.success(f"✅ **Predicted Final Result: {result}**")
 
 # Footer
-st.markdown("<div class='footer'>© 2025 Kilani Sikiru O. | All Rights Reserved</div>", unsafe_allow_html=True)
+st.write("---")
+st.markdown("<center>© 2025 Kilani Sikiru | Student Result Predictor App</center>", unsafe_allow_html=True)
