@@ -67,7 +67,7 @@ with st.sidebar:
         - Predicted Final Degree Class
     """)
 
-    with st.header("👨‍💻 About the Developer")
+    st.header("👨‍💻 About the Developer")
     st.markdown("""
     <div style="padding: 10px; background-color: #f1f1f1; border-radius: 10px;">
         <h4 style="color:#2c3e50;">Kilani Sikiru Olanrewaju</h4>
@@ -99,7 +99,7 @@ with st.sidebar:
         </p>
         <p style="font-size: 13px; color: grey;">"Empowering solutions through code and creativity."</p>
     </div>
-    """)
+    """, unsafe_allow_html=True)
 
 # Input Section
 st.subheader("📥 Input WAEC Grades and GPA")
