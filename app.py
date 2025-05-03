@@ -68,18 +68,37 @@ with st.sidebar:
     """)
 
     st.header("👨‍💻 About the Developer")
-    st.write("""
-        **Kilani Sikiru Olanrewaju** is a passionate computer scientist, web developer, and educator. He is currently pursuing a 
-        BSc in Computer Science at the Federal University of Agriculture, Abeokuta. He is also an advocate for technology 
-        integration in education and has a strong background in machine learning, data analysis, and web development.
-
-        Kilani has contributed to various academic and professional projects, including web development, software engineering, 
-        and data analysis. His skills include Python, TensorFlow, web technologies (HTML, CSS, JavaScript, PHP), and data 
-        security.
-
-        **Contact**:
-        - Email: kilanisikiruolanrewaju@gmail.com
-        - Phone: +234 806 152 7690
+    st.markdown("""
+    <div style="padding: 10px; background-color: #f1f1f1; border-radius: 10px;">
+        <h4 style="color:#2c3e50;">Kilani Sikiru Olanrewaju</h4>
+        <p style="font-size: 14px; line-height: 1.5;">
+            🎓 <strong>Undergraduate Student</strong><br>
+            Department of Computer Science,<br>
+            Federal University of Agriculture, Abeokuta, Nigeria.
+        </p>
+        <p style="font-size: 14px; line-height: 1.5;">
+            💡 <strong>Expertise:</strong><br>
+            • Machine Learning & Data Analysis<br>
+            • Full Stack Web Development<br>
+            • Cybersecurity & IT Support<br>
+        </p>
+        <p style="font-size: 14px; line-height: 1.5;">
+            🔧 <strong>Skills:</strong><br>
+            Python, TensorFlow, Scikit-Learn, PHP, JavaScript, HTML/CSS, SQL, MySQL, Streamlit
+        </p>
+        <p style="font-size: 14px; line-height: 1.5;">
+            📚 <strong>Certifications:</strong><br>
+            • Cisco IT Security<br>
+            • Cyber Threat Intelligence<br>
+            • Soft Skills & Communication (Jobberman)
+        </p>
+        <p style="font-size: 14px; line-height: 1.5;">
+            📫 <strong>Contact:</strong><br>
+            <strong>Email:</strong> kilanisikiruolanrewaju@gmail.com<br>
+            <strong>Phone:</strong> +234 806 152 7690
+        </p>
+        <p style="font-size: 13px; color: grey;">"Empowering solutions through code and creativity."</p>
+    </div>
     """)
 
 # Input Section
