@@ -67,7 +67,7 @@ with st.sidebar:
         - Predicted Final Degree Class
     """)
 
-    st.header("👨‍💻 About the Developer")
+    with st.header("👨‍💻 About the Developer")
     st.markdown("""
     <div style="padding: 10px; background-color: #f1f1f1; border-radius: 10px;">
         <h4 style="color:#2c3e50;">Kilani Sikiru Olanrewaju</h4>
