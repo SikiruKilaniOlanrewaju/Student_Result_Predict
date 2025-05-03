@@ -150,19 +150,19 @@ else:
         if submit_button:
             # Preprocess the input data
            # Preprocess the input data
-waec_scores = np.array([waec_mapping[grade] for grade in waec_grades.values()])
-features = np.concatenate([waec_scores, [gpa]])
+            waec_scores = np.array([waec_mapping[grade] for grade in waec_grades.values()])
+            features = np.concatenate([waec_scores, [gpa]])
 
-# Ensure the features are reshaped correctly
-features = features.reshape(1, -1)  # Ensure the shape is (1, n_features)
+            # Ensure the features are reshaped correctly
+            features = features.reshape(1, -1)  # Ensure the shape is (1, n_features)
 
-# Scale the features
-scaled_features = scaler.transform(features)  # Now pass the reshaped array
-
-# Predict the result
-prediction = model.predict(scaled_features)
-result_class = np.argmax(prediction)
-result = result_mapping[result_class]
+            # Scale the features
+            scaled_features = scaler.transform(features)  # Now pass the reshaped array
+    
+            # Predict the result
+            prediction = model.predict(scaled_features)
+            result_class = np.argmax(prediction)
+            result = result_mapping[result_class]
 
             st.success(f"Your predicted result is: {result}")
 
