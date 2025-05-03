@@ -2,7 +2,6 @@
 import streamlit as st
 import numpy as np
 
-import joblib
 
 # Load model and scaler
 model = tf.keras.models.load_model('student_prediction_model.h5')
