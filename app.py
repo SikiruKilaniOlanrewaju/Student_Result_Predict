@@ -24,7 +24,7 @@ result_mapping = {
 st.set_page_config(page_title="Student Result Predictor", page_icon="🎓", layout="centered")
 
 # Custom CSS Styling
-st.markdown(""" 
+st.markdown("""
     <style>
     .main {
         background-color: #f4f9f4;
@@ -44,137 +44,159 @@ st.markdown("""
     .stButton>button:hover {
         background-color: #218838;
     }
-    footer {
-        font-size: 14px;
-        text-align: center;
-        color: gray;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        padding: 10px 0;
-        background-color: #f4f9f4;
-        border-top: 1px solid #ddd;
-    }
-    footer a {
-        color: #28a745;
-        text-decoration: none;
-    }
-    footer a:hover {
-        text-decoration: underline;
-    }
     </style>
 """, unsafe_allow_html=True)
 
-# Check if welcome screen has been passed
-if 'welcome_screen' not in st.session_state:
-    st.session_state.welcome_screen = True
+# App Title
+st.title("🎓 Student Final Result Prediction")
+st.markdown("##### Developed by **Kilani Sikiru O.**  &nbsp;&nbsp;&nbsp; 🎓 Matric: **PT/22/0061**")
+st.write("---")
 
-# If we're on the welcome screen
-if st.session_state.welcome_screen:
-    # Welcome page content
-    st.title("🎓 Welcome to the Student Result Predictor")
-    st.write("This app predicts the final academic result of a student based on their WAEC grades and first semester GPA.")
-    st.write("---")
-    
+# Sidebar Information
+with st.sidebar:
+    st.header("📘 About App")
+    st.info("""
+        This app uses a machine learning model to predict a student's **final academic result**
+        based on their WAEC grades and first semester GPA.
+
+        Inputs:
+        - WAEC Grades for 6 subjects
+        - First Semester GPA
+
+        Output:
+        - Predicted Final Degree Class
+    """)
+
+    st.header("👨‍💻 About the Developer")
     st.markdown("""
-        <div style="text-align:center;">
-            <h3 style="color:#2c3e50;">Get ready to predict your final result with just a few details!</h3>
-            <p style="font-size:16px; color:#7f8c8d;">This application helps you forecast your academic future based on historical data and grades.</p>
-            <p style="font-size:16px; color:#7f8c8d;">Click the button below to proceed and input your data.</p>
-        </div>
+    <div style="padding: 10px; background-color: #f1f1f1; border-radius: 10px;">
+        <h4 style="color:#2c3e50;">Kilani Sikiru Olanrewaju</h4>
+        <p style="font-size: 14px; line-height: 1.5;">
+            🎓 <strong>Undergraduate Student</strong><br>
+            Department of Computer Science,<br>
+            Federal University of Agriculture, Abeokuta, Nigeria.
+        </p>
+        <p style="font-size: 14px; line-height: 1.5;">
+            💡 <strong>Expertise:</strong><br>
+            • Machine Learning & Data Analysis<br>
+            • Full Stack Web Development<br>
+            • Cybersecurity & IT Support<br>
+        </p>
+        <p style="font-size: 14px; line-height: 1.5;">
+            🔧 <strong>Skills:</strong><br>
+            Python, TensorFlow, Scikit-Learn, PHP, JavaScript, HTML/CSS, SQL, MySQL, Streamlit
+        </p>
+        <p style="font-size: 14px; line-height: 1.5;">
+            📚 <strong>Certifications:</strong><br>
+            • Cisco IT Security<br>
+            • Cyber Threat Intelligence<br>
+            • Soft Skills & Communication (Jobberman)
+        </p>
+        <p style="font-size: 14px; line-height: 1.5;">
+            📫 <strong>Contact:</strong><br>
+            <strong>Email:</strong> kilanisikiruolanrewaju@gmail.com<br>
+            <strong>Phone:</strong> +234 806 152 7690
+        </p>
+        <p style="font-size: 13px; color: grey;">"Empowering solutions through code and creativity."</p>
+    </div>
     """, unsafe_allow_html=True)
 
-    # Proceed button
-    if st.button("🔜 Proceed to Prediction Page"):
-        st.session_state.welcome_screen = False  # Move to the next page
+# Input Section
+st.subheader("📥 Input WAEC Grades and GPA")
+grades = {}
+subjects = ["English", "Maths", "Physics", "Chemistry", "Biology", "Economics"]
 
-# Main App Content (Prediction Page)
-else:
-    st.title("🎓 Student Final Result Prediction")
-    st.markdown("##### Developed by **Kilani Sikiru O.**  &nbsp;&nbsp;&nbsp; 🎓 Matric: **PT/22/0061**")
-    st.write("---")
+col1, col2 = st.columns(2)
+for idx, subj in enumerate(subjects):
+    with col1 if idx % 2 == 0 else col2:
+        grades[subj] = st.selectbox(f"{subj} Grade", options=list(waec_mapping.keys()), key=subj)
 
-    # Sidebar Information
-    with st.sidebar:
-        st.header("📘 About App")
-        st.info("""This app uses a machine learning model to predict a student's **final academic result**
-                  based on their WAEC grades and first semester GPA.""")
+gpa = st.number_input("🎯 Enter First Semester GPA", min_value=0.0, max_value=5.0, step=0.1)
+
+# Prediction Function
+def predict_result(input_data):
+    input_array = np.array([input_data])
+    input_scaled = scaler.transform(input_array)
+    prediction = model.predict(input_scaled)
+    predicted_class = np.argmax(prediction, axis=1)[0]
+    result = result_mapping[predicted_class]
+    confidence = np.max(prediction)
+    return result, confidence
+
+# Predict Button
+if st.button("🔍 Predict Final Result"):
+    input_data = [waec_mapping[grades[subj]] for subj in subjects]
+    input_data.append(gpa)
+    result, confidence = predict_result(input_data)
     
-        st.header("👨‍💻 About the Developer")
-        st.markdown("""
-        <div style="padding: 10px; background-color: #f1f1f1; border-radius: 10px;">
-            <h4 style="color:#2c3e50;">Kilani Sikiru Olanrewaju</h4>
-            <p style="font-size: 14px; line-height: 1.5;">
-                🎓 <strong>Undergraduate Student</strong><br>
-                Department of Computer Science,<br>
-                Federal University of Agriculture, Abeokuta, Nigeria.
-            </p>
-            <p style="font-size: 14px; line-height: 1.5;">
-                💡 <strong>Expertise:</strong><br>
-                • Machine Learning & Data Analysis<br>
-                • Full Stack Web Development<br>
-                • Cybersecurity & IT Support<br>
-            </p>
-            <p style="font-size: 14px; line-height: 1.5;">
-                🔧 <strong>Skills:</strong><br>
-                Python, TensorFlow, Scikit-Learn, PHP, JavaScript, HTML/CSS, SQL, MySQL, Streamlit
-            </p>
-            <p style="font-size: 14px; line-height: 1.5;">
-                📚 <strong>Certifications:</strong><br>
-                • Cisco IT Security<br>
-                • Cyber Threat Intelligence<br>
-                • Soft Skills & Communication (Jobberman)
-            </p>
-            <p style="font-size: 14px; line-height: 1.5;">
-                📫 <strong>Contact:</strong><br>
-                <strong>Email:</strong> kilanisikiruolanrewaju@gmail.com<br>
-                <strong>Phone:</strong> +234 806 152 7690
-            </p>
-            <p style="font-size: 13px; color: grey;">"Empowering solutions through code and creativity."</p>
-        </div>
-        """, unsafe_allow_html=True)
+    st.success(f"✅ **Predicted Final Result: {result}**")
+    st.write(f"📊 **Confidence Score: {confidence * 100:.2f}%**")
 
-    # Input form for GPA and WAEC grades
-    st.header("📊 Enter Your Details")
-    with st.form("input_form"):
-        # Collecting input data
-        gpa = st.number_input("First Semester GPA", min_value=0.0, max_value=5.0, step=0.1)
-        waec_grades = {
-            subject: st.selectbox(f"Select grade for {subject}", options=list(waec_mapping.keys())) for subject in
-            ["English", "Mathematics", "Physics", "Chemistry", "Biology"]
-        }
+# CSV Upload for Batch Prediction
+st.subheader("📤 Batch Prediction - Upload CSV")
+uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
 
-        # Button to submit the form
-        submit_button = st.form_submit_button("🔮 Predict Result")
+if uploaded_file is not None:
+    try:
+        df = pd.read_csv(uploaded_file)
 
-        if submit_button:
-            # Preprocess the input data
-           # Preprocess the input data
-            waec_scores = np.array([waec_mapping[grade] for grade in waec_grades.values()])
-            features = np.concatenate([waec_scores, [gpa]])
+        if all(col in df.columns for col in ["English", "Maths", "Physics", "Chemistry", "Biology", "Economics", "GPA"]):
+            st.write("Input Data Preview:")
+            st.write(df.head())
 
-            # Ensure the features are reshaped correctly
-            features = features.reshape(1, -1)  # Ensure the shape is (1, n_features)
+            predictions = []
+            for _, row in df.iterrows():
+                grades_input = [waec_mapping[row[subj]] for subj in subjects]
+                grades_input.append(row['GPA'])
+                result, confidence = predict_result(grades_input)
+                predictions.append([result, confidence])
 
-            # Scale the features
-            scaled_features = scaler.transform(features)  # Now pass the reshaped array
-    
-            # Predict the result
-            prediction = model.predict(scaled_features)
-            result_class = np.argmax(prediction)
-            result = result_mapping[result_class]
+            df['Predicted Result'] = [pred[0] for pred in predictions]
+            df['Confidence Score'] = [pred[1] for pred in predictions]
 
-            st.success(f"Your predicted result is: {result}")
+            st.write("Prediction Results:")
+            st.write(df)
 
-            # Show the prediction chart
-            st.subheader("📊 Prediction Confidence")
-            result_chart_data = pd.DataFrame(prediction[0], columns=["Confidence"], index=["First Class", "Second Class Upper", "Second Class Lower", "Third Class", "Pass/Withdrawn"])
-            st.bar_chart(result_chart_data)
+            # Download Button
+            st.download_button(
+                label="Download Prediction Results",
+                data=df.to_csv(index=False),
+                file_name="predicted_results.csv",
+                mime="text/csv"
+            )
 
-# Footer content
-st.markdown("""
-    <footer>
-        <p>Powered by <a href="https://www.github.com/kilanisikiru" target="_blank">Kilani Sikiru Olanrewaju</a> | 
-        <span style="color:#7f8c8d;">&copy; 2025</span></p>
-    </footer>
-""", unsafe_allow_html=True)
+            # Charts Section
+            st.subheader("📊 Distribution of Predicted Final Results")
+            result_counts = df['Predicted Result'].value_counts().reset_index()
+            result_counts.columns = ['Final Result', 'Count']
+            bar_chart = alt.Chart(result_counts).mark_bar().encode(
+                x=alt.X('Final Result', sort=None),
+                y='Count',
+                color='Final Result'
+            ).properties(width=600)
+            st.altair_chart(bar_chart)
+
+            st.subheader("📈 Confidence Score Histogram")
+            fig, ax = plt.subplots()
+            ax.hist(df['Confidence Score'], bins=10, color='skyblue', edgecolor='black')
+            ax.set_xlabel('Confidence Score')
+            ax.set_ylabel('Number of Predictions')
+            st.pyplot(fig)
+
+            st.subheader("📚 Average GPA per Final Result")
+            avg_gpa = df.groupby('Predicted Result')['GPA'].mean().reset_index()
+            gpa_chart = alt.Chart(avg_gpa).mark_bar().encode(
+                x='Predicted Result',
+                y='GPA',
+                color='Predicted Result'
+            ).properties(width=600)
+            st.altair_chart(gpa_chart)
+
+        else:
+            st.error("The CSV file does not contain the necessary columns.")
+    except Exception as e:
+        st.error(f"Error: {e}")
+
+# Footer
+st.write("---")
+st.markdown("<center>© 2025 Kilani Sikiru | Student Result Predictor App</center>", unsafe_allow_html=True)
