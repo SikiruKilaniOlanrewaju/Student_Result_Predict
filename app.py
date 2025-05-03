@@ -83,7 +83,7 @@ def predict_result(input_data):
     input_array = np.array([input_data])
     input_scaled = scaler.transform(input_array)
     prediction = model.predict(input_scaled)
-    predicted_class = np.argmax(prediction, axis=1)[0]
+    predicted_class = np.argmax(prediction, axis=1)[0]  # Get the class with the highest probability
     result = result_mapping[predicted_class]
     confidence = np.max(prediction)  # Get the highest confidence score
     return result, confidence
@@ -95,7 +95,7 @@ if st.button("🔍 Predict Final Result"):
     result, confidence = predict_result(input_data)
     
     st.success(f"✅ **Predicted Final Result: {result}**")
-    st.write(f"📊 **Confidence Score: {confidence * 100:.2f}%**")
+    st.write(f"📊 **Confidence Score: {confidence * 100:.2f}%**")  # Display confidence as percentage
 
 # **CSV Upload for Batch Prediction**
 st.subheader("📤 Batch Prediction - Upload CSV")
