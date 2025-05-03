@@ -3,6 +3,8 @@ import numpy as np
 import tensorflow as tf
 import joblib
 import pandas as pd
+import altair as alt
+import matplotlib.pyplot as plt
 
 # Load model and scaler
 model = tf.keras.models.load_model('student_prediction_model.h5')
@@ -56,26 +58,25 @@ with st.sidebar:
     st.info("""
         This app uses a machine learning model to predict a student's **final academic result**
         based on their WAEC grades and first semester GPA.
-        
+
         Inputs:
         - WAEC Grades for 6 subjects
         - First Semester GPA
-        
+
         Output:
         - Predicted Final Degree Class
     """)
 
-    # About the Developer Section
     st.header("👨‍💻 About the Developer")
     st.write("""
         **Kilani Sikiru Olanrewaju** is a passionate computer scientist, web developer, and educator. He is currently pursuing a 
         BSc in Computer Science at the Federal University of Agriculture, Abeokuta. He is also an advocate for technology 
         integration in education and has a strong background in machine learning, data analysis, and web development.
-        
+
         Kilani has contributed to various academic and professional projects, including web development, software engineering, 
         and data analysis. His skills include Python, TensorFlow, web technologies (HTML, CSS, JavaScript, PHP), and data 
         security.
-        
+
         **Contact**:
         - Email: kilanisikiruolanrewaju@gmail.com
         - Phone: +234 806 152 7690
@@ -91,17 +92,16 @@ for idx, subj in enumerate(subjects):
     with col1 if idx % 2 == 0 else col2:
         grades[subj] = st.selectbox(f"{subj} Grade", options=list(waec_mapping.keys()), key=subj)
 
-# GPA as number input
 gpa = st.number_input("🎯 Enter First Semester GPA", min_value=0.0, max_value=5.0, step=0.1)
 
-# Function to predict for individual input
+# Prediction Function
 def predict_result(input_data):
     input_array = np.array([input_data])
     input_scaled = scaler.transform(input_array)
     prediction = model.predict(input_scaled)
-    predicted_class = np.argmax(prediction, axis=1)[0]  # Get the class with the highest probability
+    predicted_class = np.argmax(prediction, axis=1)[0]
     result = result_mapping[predicted_class]
-    confidence = np.max(prediction)  # Get the highest confidence score
+    confidence = np.max(prediction)
     return result, confidence
 
 # Predict Button
@@ -111,24 +111,20 @@ if st.button("🔍 Predict Final Result"):
     result, confidence = predict_result(input_data)
     
     st.success(f"✅ **Predicted Final Result: {result}**")
-    st.write(f"📊 **Confidence Score: {confidence * 100:.2f}%**")  # Display confidence as percentage
+    st.write(f"📊 **Confidence Score: {confidence * 100:.2f}%**")
 
-# **CSV Upload for Batch Prediction**
+# CSV Upload for Batch Prediction
 st.subheader("📤 Batch Prediction - Upload CSV")
-
 uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
 
 if uploaded_file is not None:
     try:
-        # Read the uploaded CSV file
         df = pd.read_csv(uploaded_file)
 
-        # Check if the necessary columns exist
         if all(col in df.columns for col in ["English", "Maths", "Physics", "Chemistry", "Biology", "Economics", "GPA"]):
             st.write("Input Data Preview:")
             st.write(df.head())
 
-            # Prepare data for prediction
             predictions = []
             for _, row in df.iterrows():
                 grades_input = [waec_mapping[row[subj]] for subj in subjects]
@@ -136,21 +132,47 @@ if uploaded_file is not None:
                 result, confidence = predict_result(grades_input)
                 predictions.append([result, confidence])
 
-            # Create a DataFrame with predictions
             df['Predicted Result'] = [pred[0] for pred in predictions]
             df['Confidence Score'] = [pred[1] for pred in predictions]
 
-            # Display the results
             st.write("Prediction Results:")
             st.write(df)
 
-            # Option to download the results as a CSV
+            # Download Button
             st.download_button(
                 label="Download Prediction Results",
                 data=df.to_csv(index=False),
                 file_name="predicted_results.csv",
                 mime="text/csv"
             )
+
+            # Charts Section
+            st.subheader("📊 Distribution of Predicted Final Results")
+            result_counts = df['Predicted Result'].value_counts().reset_index()
+            result_counts.columns = ['Final Result', 'Count']
+            bar_chart = alt.Chart(result_counts).mark_bar().encode(
+                x=alt.X('Final Result', sort=None),
+                y='Count',
+                color='Final Result'
+            ).properties(width=600)
+            st.altair_chart(bar_chart)
+
+            st.subheader("📈 Confidence Score Histogram")
+            fig, ax = plt.subplots()
+            ax.hist(df['Confidence Score'], bins=10, color='skyblue', edgecolor='black')
+            ax.set_xlabel('Confidence Score')
+            ax.set_ylabel('Number of Predictions')
+            st.pyplot(fig)
+
+            st.subheader("📚 Average GPA per Final Result")
+            avg_gpa = df.groupby('Predicted Result')['GPA'].mean().reset_index()
+            gpa_chart = alt.Chart(avg_gpa).mark_bar().encode(
+                x='Predicted Result',
+                y='GPA',
+                color='Predicted Result'
+            ).properties(width=600)
+            st.altair_chart(gpa_chart)
+
         else:
             st.error("The CSV file does not contain the necessary columns.")
     except Exception as e:
