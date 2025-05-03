@@ -1,7 +1,7 @@
 
 import streamlit as st
 import numpy as np
-import tensorflow as tf
+
 import joblib
 
 # Load model and scaler
