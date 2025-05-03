@@ -5,13 +5,13 @@ import tensorflow as tf
 import joblib
 
 # Load model and scaler
-model = tf.keras.models.load_model('/content/student_prediction_model.h5')
-scaler = joblib.load('/content/scaler.pkl')
+model = tf.keras.models.load_model('student_prediction_model.h5')
+scaler = joblib.load('scaler.pkl')
 
 waec_mapping = {'A1': 6, 'B2': 5, 'B3': 4, 'C4': 3, 'C5': 2, 'C6': 1, 'D7': 0, 'F9': 0}
 result_mapping = {0: 'First Class', 1: 'Second Upper', 2: 'Second Lower', 3: 'Third Class', 4: 'Pass/Withdrawn'}
 
-st.title("🎓 Student Final Result Prediction")
+st.title("🎓 Student Final Result Prediction - DEVELOPED BY KILANI SIKIRU O - PT/22/0061")
 
 grades = {}
 subjects = ["English", "Maths", "Physics", "Chemistry", "Biology", "Economics"]
