@@ -65,12 +65,8 @@ with st.sidebar:
         - Predicted Final Degree Class
     """)
 
-    # About the Developer Section with Picture
+    # About the Developer Section
     st.header("👨‍💻 About the Developer")
-    
-    # Display image (change 'path_to_your_image' to the actual file path)
-    st.image("path_to_your_image.jpg", width=150, caption="Kilani Sikiru Olanrewaju")
-    
     st.write("""
         **Kilani Sikiru Olanrewaju** is a passionate computer scientist, web developer, and educator. He is currently pursuing a 
         BSc in Computer Science at the Federal University of Agriculture, Abeokuta. He is also an advocate for technology 
