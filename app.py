@@ -65,6 +65,26 @@ with st.sidebar:
         - Predicted Final Degree Class
     """)
 
+    # About the Developer Section with Picture
+    st.header("👨‍💻 About the Developer")
+    
+    # Display image (change 'path_to_your_image' to the actual file path)
+    st.image("path_to_your_image.jpg", width=150, caption="Kilani Sikiru Olanrewaju")
+    
+    st.write("""
+        **Kilani Sikiru Olanrewaju** is a passionate computer scientist, web developer, and educator. He is currently pursuing a 
+        BSc in Computer Science at the Federal University of Agriculture, Abeokuta. He is also an advocate for technology 
+        integration in education and has a strong background in machine learning, data analysis, and web development.
+        
+        Kilani has contributed to various academic and professional projects, including web development, software engineering, 
+        and data analysis. His skills include Python, TensorFlow, web technologies (HTML, CSS, JavaScript, PHP), and data 
+        security.
+        
+        **Contact**:
+        - Email: kilanisikiruolanrewaju@gmail.com
+        - Phone: +234 806 152 7690
+    """)
+
 # Input Section
 st.subheader("📥 Input WAEC Grades and GPA")
 grades = {}
