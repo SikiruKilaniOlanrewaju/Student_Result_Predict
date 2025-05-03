@@ -74,7 +74,8 @@ for idx, subj in enumerate(subjects):
     with col1 if idx % 2 == 0 else col2:
         grades[subj] = st.selectbox(f"{subj} Grade", options=list(waec_mapping.keys()), key=subj)
 
-gpa = st.slider("🎯 First Semester GPA", 0.0, 5.0, step=0.1)
+# GPA as number input
+gpa = st.number_input("🎯 Enter First Semester GPA", min_value=0.0, max_value=5.0, step=0.1)
 
 # Predict Button
 if st.button("🔍 Predict Final Result"):
